@@ -30,18 +30,17 @@ Install docker following the [official documentation](https://docs.docker.com/en
 
 Install system-level dependencies:
 ```console
-$ sudo apt install -y libosmesa6-dev libgl1-mesa-glx libglfw3 patchelf
+sudo apt install -y libosmesa6-dev libgl1-mesa-glx libglfw3 patchelf
 ```
 
 We recommend [Miniforge](https://github.com/conda-forge/miniforge?tab=readme-ov-file#miniforge3) instead of the standard anaconda distribution for faster installation: 
 ```console
-$ mamba env create -f conda_environment.yaml
+mamba env create -f conda_environment.yaml
 ```
 
 Activate environment
 ```console
-$ conda activate umi
-(umi)$ 
+conda activate umi
 ```
 
 ## Running UMI SLAM pipeline
@@ -52,7 +51,7 @@ Download example data
 
 Run SLAM pipeline
 ```console
-(umi)$ python run_slam_pipeline.py example_demo_session
+python run_slam_pipeline.py example_demo_session
 
 ...
 Found following cameras:
