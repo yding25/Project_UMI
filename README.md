@@ -1,4 +1,4 @@
-# Universal Manipulation Interface
+# Universal Manipulation Interface - Shanghai AI Lab
 
 [[Project page]](https://umi-gripper.github.io/)
 [[Paper]](https://umi-gripper.github.io/#paper)
