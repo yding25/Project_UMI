@@ -24,7 +24,7 @@
 <sup>3</sup>Toyota Research Institute
 
 ## 🛠️ Installation
-Only tested on Ubuntu 22.04
+Only tested on Ubuntu 20.04
 
 Install docker following the [official documentation](https://docs.docker.com/engine/install/ubuntu/) and finish [linux-postinstall](https://docs.docker.com/engine/install/linux-postinstall/).
 
