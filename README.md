@@ -50,7 +50,7 @@ wget --recursive --no-parent --no-host-directories --cut-dirs=2 --relative --rej
 
 Run SLAM pipeline
 ```console
-python run_slam_pipeline.py example_demo_session
+python run_slam_pipeline.py "universal_manipulation_interface/example_demo_session"
 
 ...
 Found following cameras:
