@@ -33,9 +33,8 @@ Install system-level dependencies:
 sudo apt install -y libosmesa6-dev libgl1-mesa-glx libglfw3 patchelf
 ```
 
-We recommend [Miniforge](https://github.com/conda-forge/miniforge?tab=readme-ov-file#miniforge3) instead of the standard anaconda distribution for faster installation: 
 ```console
-mamba env create -f conda_environment.yaml
+conda env create -f conda_environment.yaml
 ```
 
 Activate environment
