@@ -45,7 +45,7 @@ conda activate umi
 ## Running UMI SLAM pipeline
 Download example data
 ```console
-(umi)$ wget --recursive --no-parent --no-host-directories --cut-dirs=2 --relative --reject="index.html*" https://real.stanford.edu/umi/data/example_demo_session/
+wget --recursive --no-parent --no-host-directories --cut-dirs=2 --relative --reject="index.html*" https://real.stanford.edu/umi/data/example_demo_session/
 ```
 
 Run SLAM pipeline
@@ -71,28 +71,28 @@ Despite our significant effort on robustness improvement, OBR_SLAM3 is still the
 
 Generate dataset for training.
 ```console
-(umi)$ python scripts_slam_pipeline/07_generate_replay_buffer.py -o example_demo_session/dataset.zarr.zip example_demo_session
+python scripts_slam_pipeline/07_generate_replay_buffer.py -o example_demo_session/dataset.zarr.zip example_demo_session
 ```
 
 ## Training Diffusion Policy
 Single-GPU training. Tested to work on RTX3090 24GB.
 ```console
-(umi)$ python train.py --config-name=train_diffusion_unet_timm_umi_workspace task.dataset_path=example_demo_session/dataset.zarr.zip
+python train.py --config-name=train_diffusion_unet_timm_umi_workspace task.dataset_path=example_demo_session/dataset.zarr.zip
 ```
 
 Multi-GPU training.
 ```console
-(umi)$ accelerate --num_processes <ngpus> train.py --config-name=train_diffusion_unet_timm_umi_workspace task.dataset_path=example_demo_session/dataset.zarr.zip
+accelerate --num_processes <ngpus> train.py --config-name=train_diffusion_unet_timm_umi_workspace task.dataset_path=example_demo_session/dataset.zarr.zip
 ```
 
 Downloading in-the-wild cup arrangement dataset (processed).
 ```console
-(umi)$ wget https://real.stanford.edu/umi/data/zarr_datasets/cup_in_the_wild.zarr.zip
+wget https://real.stanford.edu/umi/data/zarr_datasets/cup_in_the_wild.zarr.zip
 ```
 
 Multi-GPU training.
 ```console
-(umi)$ accelerate --num_processes <ngpus> train.py --config-name=train_diffusion_unet_timm_umi_workspace task.dataset_path=cup_in_the_wild.zarr.zip
+accelerate --num_processes <ngpus> train.py --config-name=train_diffusion_unet_timm_umi_workspace task.dataset_path=cup_in_the_wild.zarr.zip
 ```
 
 ## 🦾 Real-world Deployment
@@ -135,17 +135,17 @@ Our in-the-wild cup arragement policy is trained with the distribution of ["espr
 
 Download pre-trained checkpoint.
 ```console
-(umi)$ wget https://real.stanford.edu/umi/data/pretrained_models/cup_wild_vit_l_1img.ckpt
+wget https://real.stanford.edu/umi/data/pretrained_models/cup_wild_vit_l_1img.ckpt
 ```
 
 Grant permission to the HDMI capture card.
 ```console
-(umi)$ sudo chmod -R 777 /dev/bus/usb
+sudo chmod -R 777 /dev/bus/usb
 ```
 
 Launch eval script.
 ```console
-(umi)$ python eval_real.py --robot_config=example/eval_robots_config.yaml -i cup_wild_vit_l.ckpt -o data/eval_cup_wild_example
+python eval_real.py --robot_config=example/eval_robots_config.yaml -i cup_wild_vit_l.ckpt -o data/eval_cup_wild_example
 ```
 After the script started, use your spacemouse to control the robot and the gripper (spacemouse buttons). Press `C` to start the policy. Press `S` to stop.
 
