@@ -25,8 +25,9 @@
 
 ## 🛠️ Installation
 Only tested on Ubuntu 20.04
-
+```console
 Install docker following the [official documentation](https://docs.docker.com/engine/install/ubuntu/) and finish [linux-postinstall](https://docs.docker.com/engine/install/linux-postinstall/).
+```
 
 Install system-level dependencies:
 ```console
@@ -51,7 +52,9 @@ wget --recursive --no-parent --no-host-directories --cut-dirs=2 --relative --rej
 Run SLAM pipeline
 ```console
 python run_slam_pipeline.py "universal_manipulation_interface/example_demo_session"
+```
 
+```
 ...
 Found following cameras:
 camera_serial
@@ -65,6 +68,7 @@ camera_idx
 defaultdict(<function main.<locals>.<lambda> at 0x7f471feb2310>, {})
 n_dropped_demos 0
 ````
+
 For this dataset, 99% of the data are useable (successful SLAM), with 0 demonstrations dropped. If your dataset has a low SLAM success rate, double check if you carefully followed our [data collection instruction](https://swanky-sphere-ad1.notion.site/UMI-Data-Collection-Instruction-4db1a1f0f2aa4a2e84d9742720428b4c). 
 
 Despite our significant effort on robustness improvement, OBR_SLAM3 is still the most fragile part of UMI pipeline. If you are an expert in SLAM, please consider contributing to our fork of [OBR_SLAM3](https://github.com/cheng-chi/ORB_SLAM3) which is specifically optimized for UMI workflow.
