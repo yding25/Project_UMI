@@ -1,49 +1,45 @@
-# Universal Manipulation Interface - Shanghai AI Lab
+# UMI-Flexiv
 
-[[Project page]](https://umi-gripper.github.io/)
-[[Paper]](https://umi-gripper.github.io/#paper)
-[[Hardware Guide]](https://docs.google.com/document/d/1TPYwV9sNVPAi0ZlAupDMkXZ4CA1hsZx7YDMSmcEy6EU/edit?usp=sharing)
-[[Data Collection Instruction]](https://swanky-sphere-ad1.notion.site/UMI-Data-Collection-Tutorial-4db1a1f0f2aa4a2e84d9742720428b4c?pvs=4)
-[[SLAM repo]](https://github.com/cheng-chi/ORB_SLAM3)
-[[SLAM docker]](https://hub.docker.com/r/chicheng/orb_slam3)
+[![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-370/)
+[![Ubuntu 20.04](https://img.shields.io/badge/Ubuntu-20.04-orange.svg)](https://releases.ubuntu.com/20.04/)
+[![Ubuntu 22.04](https://img.shields.io/badge/Ubuntu-22.04-orange.svg)](https://releases.ubuntu.com/22.04/)
 
-<img width="90%" src="assets/umi_teaser.png">
+This repository revises the [UMI project](https://umi-gripper.github.io/) to adapt it for use with the Flexiv robotic arm. Additionally, we have modified the code to make it more decoupled, facilitating easier module updates and replacements.
 
-[Cheng Chi](http://cheng-chi.github.io/)<sup>1,2</sup>,
-[Zhenjia Xu](https://www.zhenjiaxu.com/)<sup>1,2</sup>,
-[Chuer Pan](https://chuerpan.com/)<sup>1</sup>,
-[Eric Cousineau](https://www.eacousineau.com/)<sup>3</sup>,
-[Benjamin Burchfiel](http://www.benburchfiel.com/)<sup>3</sup>,
-[Siyuan Feng](https://www.cs.cmu.edu/~sfeng/)<sup>3</sup>,
+## 💻 Installation
+- Install docker following the [official documentation](https://docs.docker.com/engine/install/ubuntu/) and finish [linux-postinstall](https://docs.docker.com/engine/install/linux-postinstall/).
 
-[Russ Tedrake](https://groups.csail.mit.edu/locomotion/russt.html)<sup>3</sup>,
-[Shuran Song](https://www.cs.columbia.edu/~shurans/)<sup>1,2</sup>
-
-<sup>1</sup>Stanford University,
-<sup>2</sup>Columbia University,
-<sup>3</sup>Toyota Research Institute
-
-## 🛠️ Installation
-Only tested on Ubuntu 20.04
-```console
-Install docker following the [official documentation](https://docs.docker.com/engine/install/ubuntu/) and finish [linux-postinstall](https://docs.docker.com/engine/install/linux-postinstall/).
-```
-
-Install system-level dependencies:
+- Install system-level dependencies:
 ```console
 sudo apt install -y libosmesa6-dev libgl1-mesa-glx libglfw3 patchelf
 ```
 
+- Create conda environment
 ```console
+cd install
 conda env create -f conda_environment.yaml
 ```
 
-Activate environment
+- Activate environment
 ```console
 conda activate umi
 ```
 
-## Running UMI SLAM pipeline
+## 🚀 Running UMI SLAM pipeline
+- Prepare a folder to store videos
+```console
+mkdir example_demo_session
+```
+
+- Prepare a mapping video
+
+[how to create mapping video](https://swanky-sphere-ad1.notion.site/UMI-Data-Collection-Tutorial-4db1a1f0f2aa4a2e84d9742720428b4c?pvs=4)
+
+```console
+
+```
+
+## 🚀 Running UMI SLAM pipeline
 Download example data
 ```console
 wget --recursive --no-parent --no-host-directories --cut-dirs=2 --relative --reject="index.html*" https://real.stanford.edu/umi/data/example_demo_session/
