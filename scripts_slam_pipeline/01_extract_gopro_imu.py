@@ -2,13 +2,11 @@
 python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/01_extract_gopro_imu.py
 """
 
-
 # %%
 import sys
 import os
 
 ROOT_DIR = '/home/{}/Project_UMI'.format(os.getenv('USER'))
-# ROOT_DIR = '/home/yan/Project_UMI'
 sys.path.append(ROOT_DIR)
 os.chdir(ROOT_DIR)
 

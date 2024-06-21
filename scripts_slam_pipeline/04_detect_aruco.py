@@ -1,14 +1,15 @@
 """
-python scripts_slam_pipeline/04_detect_aruco.py \
--i data_workspace/cup_in_the_wild/20240105_zhenjia_packard_2nd_conference_room/demos \
--ci data_workspace/toss_objects/20231113/calibration/gopro_intrinsics_2_7k.json \
--ac data_workspace/toss_objects/20231113/calibration/aruco_config.yaml
+python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/04_detect_aruco.py \
+-i /home/$(whoami)/Project_UMI/example_demo_session/demos \
+-ci /home/$(whoami)/Project_UMI/example/calibration/gopro_intrinsics_2_7k.json \
+-ac /home/$(whoami)/Project_UMI/example/calibration/aruco_config.yaml
 """
+
 # %%
 import sys
 import os
 
-ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
+ROOT_DIR = '/home/{}/Project_UMI'.format(os.getenv('USER'))
 sys.path.append(ROOT_DIR)
 os.chdir(ROOT_DIR)
 
@@ -27,17 +28,17 @@ from tqdm import tqdm
 @click.option('-ac', '--aruco_yaml', required=True, help='Aruco config yaml file')
 @click.option('-n', '--num_workers', type=int, default=None)
 def main(input_dir, camera_intrinsics, aruco_yaml, num_workers):
-    input_dir = pathlib.Path(os.path.expanduser(input_dir))
+    input_dir = pathlib.Path(os.path.expanduser(input_dir)).absolute()
     input_video_dirs = [x.parent for x in input_dir.glob('*/raw_video.mp4')]
     print(f'Found {len(input_video_dirs)} video dirs')
     
-    assert os.path.isfile(camera_intrinsics)
-    assert os.path.isfile(aruco_yaml)
+    assert os.path.isfile(camera_intrinsics), f"Camera intrinsics file not found: {camera_intrinsics}"
+    assert os.path.isfile(aruco_yaml), f"Aruco config file not found: {aruco_yaml}"
 
     if num_workers is None:
         num_workers = multiprocessing.cpu_count()
 
-    script_path = pathlib.Path(__file__).parent.parent.joinpath('scripts', 'detect_aruco.py')
+    script_path = pathlib.Path(ROOT_DIR).joinpath('scripts', 'detect_aruco.py')
 
     with tqdm(total=len(input_video_dirs)) as pbar:
         # one chunk per thread, therefore no synchronization needed
@@ -53,11 +54,11 @@ def main(input_dir, camera_intrinsics, aruco_yaml, num_workers):
 
                 # run SLAM
                 cmd = [
-                    'python', script_path,
+                    'python', str(script_path),
                     '--input', str(video_path),
                     '--output', str(pkl_path),
-                    '--intrinsics_json', camera_intrinsics,
-                    '--aruco_yaml', aruco_yaml,
+                    '--intrinsics_json', str(camera_intrinsics),
+                    '--aruco_yaml', str(aruco_yaml),
                     '--num_workers', '1'
                 ]
 

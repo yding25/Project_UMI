@@ -1,11 +1,12 @@
 """
-python scripts_slam_pipeline/05_run_calibrations.py data_workspace/cup_in_the_wild/20240105_zhenjia_packard_2nd_conference_room
+python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/05_run_calibrations.py /home/$(whoami)/Project_UMI/example_demo_session
 """
+
 # %%
 import sys
 import os
 
-ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
+ROOT_DIR = '/home/{}/Project_UMI'.format(os.getenv('USER'))
 sys.path.append(ROOT_DIR)
 os.chdir(ROOT_DIR)
 

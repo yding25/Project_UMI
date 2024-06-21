@@ -101,7 +101,6 @@ def main(input_dir, map_path, docker_image, num_workers, max_lost_frames, timeou
                     slam_mask, color=255, mirror=True, gripper=False, finger=True)
                 cv2.imwrite(str(mask_write_path.absolute()), slam_mask)
 
-                # map_mount_source = map_path
                 map_mount_source = pathlib.Path(map_path)
                 map_mount_target = pathlib.Path('/map').joinpath(map_mount_source.name)
 
@@ -126,6 +125,10 @@ def main(input_dir, map_path, docker_image, num_workers, max_lost_frames, timeou
 
                 stdout_path = video_dir.joinpath('slam_stdout.txt')
                 stderr_path = video_dir.joinpath('slam_stderr.txt')
+
+                print(f"Running command: {' '.join(cmd)}")
+                print(f"stdout: {stdout_path}")
+                print(f"stderr: {stderr_path}")
 
                 if len(futures) >= num_workers:
                     # limit number of inflight tasks

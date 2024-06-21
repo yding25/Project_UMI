@@ -42,6 +42,8 @@ def main():
         if potential_path.exists():
             mapping_vid_path = potential_path
             break
+    # test
+    print(f"mapping_vid_path: {mapping_vid_path}") 
     if not mapping_vid_path:
         raise FileNotFoundError(
             "mapping.mp4 not found! Please specify which mp4 file is the mapping video."

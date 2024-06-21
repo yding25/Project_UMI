@@ -32,6 +32,7 @@ conda activate umi
 ```
 
 ## 🚀 Running UMI SLAM pipeline
+
 - Prepare a folder to store videos. Please see the [instruction](https://swanky-sphere-ad1.notion.site/UMI-Data-Collection-Tutorial-4db1a1f0f2aa4a2e84d9742720428b4c?pvs=4) of making corresponding videos.
   
 ```console
@@ -43,13 +44,7 @@ mkdir /home/$(whoami)/Project_UMI/example_demo_session
 
 - **Step3:** Prepare a few demo videos, and no need to rename videos
 
-```
-cd /home/$(whoami)/Project_UMI
-python scripts_slam_pipeline/00_process_videos.py "example_demo_session"
-```
-
-## 🚀 Running UMI SLAM pipeline
-Download example data
+- You can also download example data
 ```console
 cd /home/$(whoami)/Project_UMI
 ```
@@ -57,9 +52,6 @@ cd /home/$(whoami)/Project_UMI
 ```console
 wget --recursive --no-parent --no-host-directories --cut-dirs=2 --relative --reject="index.html*" --no-check-certificate https://real.stanford.edu/umi/data/example_demo_session/
 ```
-
-### Run SLAM pipeline: 
-
 
 - Step 0: and you can get the folder **example_demo_session/demos**, where the raw videos are processed. 
 
@@ -84,7 +76,7 @@ python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/02_create_map.py --inpu
 
 ```
 
-<img src="docs/02_create_map.png" width="300"/>
+<img src="docs/02_create_map.png" width="200"/>
 
 
 - Step 3: create the mapping result: map_atlas.osa, which is saved at the folder named /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping
@@ -94,7 +86,27 @@ python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/02_create_map.py --inpu
 
 ```
 
-<img src="docs/02_create_map.png" width="300"/>
+<img src="docs/02_create_map.png" width="200"/>
+
+
+- Step 4: create the mapping result: map_atlas.osa, which is saved at the folder named /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping
+
+```console
+python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/02_create_map.py --input_dir /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping --map_path /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping/map_atlas.osa
+
+```
+
+<img src="docs/03_batch_slam.png" width="250"/>
+
+
+- Step 4: detect the aurco marker作用是处理指定目录下的每个视频文件，检测视频中的 ArUco 标签并将检测结果保存为 .pkl 文件。以下是该脚本的主要功能和作用的详细解释：
+
+```console
+python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/02_create_map.py --input_dir /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping --map_path /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping/map_atlas.osa
+
+```
+
+<img src="docs/04_detect_aruco.png" width="300"/>
 
 
 
