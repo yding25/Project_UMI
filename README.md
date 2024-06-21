@@ -14,9 +14,15 @@ This repository revises the [UMI project](https://umi-gripper.github.io/) to ada
 sudo apt install -y libosmesa6-dev libgl1-mesa-glx libglfw3 patchelf
 ```
 
+- Pull the repo
+```console
+cd /home/$(whoami)
+git clone https://github.com/yding25/Project_UMI.git
+```
+
 - Create conda environment
 ```console
-cd install
+cd /home/$(whoami)/Project_UMI/install
 conda env create -f conda_environment.yaml
 ```
 
@@ -26,29 +32,71 @@ conda activate umi
 ```
 
 ## 🚀 Running UMI SLAM pipeline
-- Prepare a folder to store videos
+- Prepare a folder to store videos. Please see the [instruction](https://swanky-sphere-ad1.notion.site/UMI-Data-Collection-Tutorial-4db1a1f0f2aa4a2e84d9742720428b4c?pvs=4) of making corresponding videos.
+  
 ```console
-mkdir example_demo_session
+mkdir /home/$(whoami)/Project_UMI/example_demo_session
 ```
+- **Step 1:** Prepare and name a video as **gripper_calibration.mp4**
 
-- Prepare a mapping video
+- **Step 2:** Prepare and name a video as **mapping.mp4**
 
-[how to create mapping video](https://swanky-sphere-ad1.notion.site/UMI-Data-Collection-Tutorial-4db1a1f0f2aa4a2e84d9742720428b4c?pvs=4)
+- **Step3:** Prepare a few demo videos, and no need to rename videos
 
-```console
-
+```
+cd /home/$(whoami)/Project_UMI
+python scripts_slam_pipeline/00_process_videos.py "example_demo_session"
 ```
 
 ## 🚀 Running UMI SLAM pipeline
 Download example data
 ```console
-wget --recursive --no-parent --no-host-directories --cut-dirs=2 --relative --reject="index.html*" https://real.stanford.edu/umi/data/example_demo_session/
+cd /home/$(whoami)/Project_UMI
 ```
 
-Run SLAM pipeline
 ```console
-python run_slam_pipeline.py "universal_manipulation_interface/example_demo_session"
+wget --recursive --no-parent --no-host-directories --cut-dirs=2 --relative --reject="index.html*" --no-check-certificate https://real.stanford.edu/umi/data/example_demo_session/
 ```
+
+### Run SLAM pipeline: 
+
+
+- Step 0: and you can get the folder **example_demo_session/demos**, where the raw videos are processed. 
+
+```console
+python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/00_process_videos.py
+```
+
+<img src="docs/00_process_videos.png" width="500"/>
+
+- Step 1: extract the imu information from videos
+
+```console
+python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/01_extract_gopro_imu.py
+```
+
+<img src="docs/01_extract_gopro_imu.png" width="500"/>
+
+- Step 2: create the mapping result: map_atlas.osa, which is saved at the folder named /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping
+
+```console
+python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/02_create_map.py --input_dir /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping --map_path /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping/map_atlas.osa
+
+```
+
+<img src="docs/02_create_map.png" width="300"/>
+
+
+- Step 3: create the mapping result: map_atlas.osa, which is saved at the folder named /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping
+
+```console
+python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/02_create_map.py --input_dir /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping --map_path /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping/map_atlas.osa
+
+```
+
+<img src="docs/02_create_map.png" width="300"/>
+
+
 
 ```
 ...
