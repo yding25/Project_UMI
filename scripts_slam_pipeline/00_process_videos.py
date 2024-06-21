@@ -2,21 +2,25 @@
 python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/00_process_videos.py
 """
 
-# %%
 import sys
 import os
-
-ROOT_DIR = '/home/{}/Project_UMI'.format(os.getenv('USER'))
-sys.path.append(ROOT_DIR)
-os.chdir(ROOT_DIR)
-
-# %%
 import pathlib
 import shutil
 from exiftool import ExifToolHelper
 from umi.common.timecode_util import mp4_get_start_datetime
 
+'''
+设置根目录 ROOT_DIR 为 /home/{USER}/Project_UMI。
+将根目录添加到 Python 的路径中，并切换当前工作目录到根目录。
+'''
+ROOT_DIR = '/home/{}/Project_UMI'.format(os.getenv('USER'))
+sys.path.append(ROOT_DIR)
+os.chdir(ROOT_DIR)
+
 def main():
+    '''
+    session_dir 定义了会话目录的路径
+    '''
     session_dir = pathlib.Path("/home/{}/Project_UMI/example_demo_session".format(os.getenv('USER')))
     session = session_dir.absolute()
     # hardcode subdirs

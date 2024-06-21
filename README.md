@@ -4,84 +4,108 @@
 [![Ubuntu 20.04](https://img.shields.io/badge/Ubuntu-20.04-orange.svg)](https://releases.ubuntu.com/20.04/)
 [![Ubuntu 22.04](https://img.shields.io/badge/Ubuntu-22.04-orange.svg)](https://releases.ubuntu.com/22.04/)
 
-This repository revises the [UMI project](https://umi-gripper.github.io/) to adapt it for use with the Flexiv robotic arm. Additionally, we have modified the code to make it more decoupled, facilitating easier module updates and replacements.
+This repository adapts the [UMI project](https://umi-gripper.github.io/) for use with the Flexiv robotic arm. The code has been modified to be more modular, allowing for easier updates and replacements of individual components.
 
-## 💻 Installation
-- Install docker following the [official documentation](https://docs.docker.com/engine/install/ubuntu/) and finish [linux-postinstall](https://docs.docker.com/engine/install/linux-postinstall/).
+# 💻 Installation
 
-- Install system-level dependencies:
-```console
-sudo apt install -y libosmesa6-dev libgl1-mesa-glx libglfw3 patchelf
-```
+1. **Install Docker:**
 
-- Pull the repo
-```console
-cd /home/$(whoami)
-git clone https://github.com/yding25/Project_UMI.git
-```
+    To install Docker on Ubuntu, follow these steps:
 
-- Create conda environment
-```console
-cd /home/$(whoami)/Project_UMI/install
-conda env create -f conda_environment.yaml
-```
+    Follow the [official documentation](https://docs.docker.com/engine/install/ubuntu/) and complete the [linux-postinstall](https://docs.docker.com/engine/install/linux-postinstall/).
 
-- Activate environment
-```console
-conda activate umi
-```
+2. **Install system-level dependencies:**
 
-## 🚀 Running UMI SLAM pipeline
+    ```bash
+    sudo apt install -y libosmesa6-dev libgl1-mesa-glx libglfw3 patchelf
+    ```
 
-- Prepare a folder to store videos. Please see the [instruction](https://swanky-sphere-ad1.notion.site/UMI-Data-Collection-Tutorial-4db1a1f0f2aa4a2e84d9742720428b4c?pvs=4) of making corresponding videos.
-  
-```console
-mkdir /home/$(whoami)/Project_UMI/example_demo_session
-```
-- **Step 1:** Prepare and name a video as **gripper_calibration.mp4**
+3. **Clone the Repository:**
 
-- **Step 2:** Prepare and name a video as **mapping.mp4**
+    ```bash
+    cd /home/$(whoami)
+    git clone https://github.com/yding25/Project_UMI.git
+    ```
 
-- **Step3:** Prepare a few demo videos, and no need to rename videos
+4. **Create conda environment**
+    ```bash
+    cd /home/$(whoami)/Project_UMI/install
+    conda env create -f conda_environment.yaml
+    ```
 
-- You can also download example data
-```console
-cd /home/$(whoami)/Project_UMI
-```
+5. **Activate environment**
+    ```bash
+    conda activate umi
+    ```
 
-```console
-wget --recursive --no-parent --no-host-directories --cut-dirs=2 --relative --reject="index.html*" --no-check-certificate https://real.stanford.edu/umi/data/example_demo_session/
-```
+By following these steps, you will have a setup ready for running the UMI-Flexiv project.
 
-- Step 0: and you can get the folder **example_demo_session/demos**, where the raw videos are processed. 
 
-```console
-python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/00_process_videos.py
-```
+# 🚀 Running UMI SLAM Pipeline
 
-<img src="docs/00_process_videos.png" width="500"/>
+## Preparing the Environment
 
-- Step 1: extract the imu information from videos
+1. **Prepare a folder to store videos:** 
+    Follow the [instructions](https://swanky-sphere-ad1.notion.site/UMI-Data-Collection-Tutorial-4db1a1f0f2aa4a2e84d9742720428b4c?pvs=4) to create the necessary videos.
 
-```console
-python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/01_extract_gopro_imu.py
-```
+   ```bash
+   mkdir -p /home/$(whoami)/Project_UMI/example_demo_session
+   ```
 
-<img src="docs/01_extract_gopro_imu.png" width="500"/>
+2. **Prepare Videos:** 
 
-- Step 2: create the mapping result: map_atlas.osa, which is saved at the folder named /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping
+    - **Step 1:** Create a video named **gripper_calibration.mp4**.
 
-```console
-python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/02_create_map.py --input_dir /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping --map_path /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping/map_atlas.osa
+    - **Step 2:** reate a video named **mapping.mp4**.
 
-```
+    - **Step3:** Prepare several demo videos (no need to rename these videos).
 
-<img src="docs/02_create_map.png" width="200"/>
+3. **Optional: Download Example Data:**
 
+    ```bash
+    cd /home/$(whoami)/Project_UMI
+    wget --recursive --no-parent --no-host-directories --cut-dirs=2 --relative --reject="index.html*" --no-check-certificate https://real.stanford.edu/umi/data/example_demo_session/
+    ```
+
+## Running the Pipeline
+
+0. **Process Raw Videos:** 
+
+    Process the raw videos in the example_demo_session/demos folder.
+
+    ```bash
+    python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/00_process_videos.py
+    ```
+
+    <img src="docs/00_process_videos.png" width="500"/>
+
+
+1. **Extract IMU Information:** 
+
+    Extract IMU information from the videos.
+
+    ```bash
+    python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/01_extract_gopro_imu.py
+    ```
+
+    <img src="docs/01_extract_gopro_imu.png" width="500"/>
+
+
+2. **Create Mapping Result:** 
+    Create the mapping result map_atlas.osa, which will be saved in the `/home/$(whoami)/Project_UMI/example_demo_session/demos/mapping` folder.
+
+    ```bash
+    python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/02_create_map.py --input_dir /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping --map_path /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping/map_atlas.osa
+    ```
+
+    <img src="docs/02_create_map.png" width="200"/>
+
+
+3. **Create Mapping Result:** 
 
 - Step 3: create the mapping result: map_atlas.osa, which is saved at the folder named /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping
 
-```console
+```bash
 python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/02_create_map.py --input_dir /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping --map_path /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping/map_atlas.osa
 
 ```
@@ -91,7 +115,7 @@ python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/02_create_map.py --inpu
 
 - Step 4: create the mapping result: map_atlas.osa, which is saved at the folder named /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping
 
-```console
+```bash
 python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/02_create_map.py --input_dir /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping --map_path /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping/map_atlas.osa
 
 ```
@@ -101,7 +125,7 @@ python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/02_create_map.py --inpu
 
 - Step 4: detect the aurco marker作用是处理指定目录下的每个视频文件，检测视频中的 ArUco 标签并将检测结果保存为 .pkl 文件。以下是该脚本的主要功能和作用的详细解释：
 
-```console
+```bash
 python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/02_create_map.py --input_dir /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping --map_path /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping/map_atlas.osa
 
 ```
@@ -130,28 +154,28 @@ For this dataset, 99% of the data are useable (successful SLAM), with 0 demonstr
 Despite our significant effort on robustness improvement, OBR_SLAM3 is still the most fragile part of UMI pipeline. If you are an expert in SLAM, please consider contributing to our fork of [OBR_SLAM3](https://github.com/cheng-chi/ORB_SLAM3) which is specifically optimized for UMI workflow.
 
 Generate dataset for training.
-```console
+```bash
 python scripts_slam_pipeline/07_generate_replay_buffer.py -o example_demo_session/dataset.zarr.zip example_demo_session
 ```
 
 ## Training Diffusion Policy
 Single-GPU training. Tested to work on RTX3090 24GB.
-```console
+```bash
 python train.py --config-name=train_diffusion_unet_timm_umi_workspace task.dataset_path=example_demo_session/dataset.zarr.zip
 ```
 
 Multi-GPU training.
-```console
+```bash
 accelerate --num_processes <ngpus> train.py --config-name=train_diffusion_unet_timm_umi_workspace task.dataset_path=example_demo_session/dataset.zarr.zip
 ```
 
 Downloading in-the-wild cup arrangement dataset (processed).
-```console
+```bash
 wget https://real.stanford.edu/umi/data/zarr_datasets/cup_in_the_wild.zarr.zip
 ```
 
 Multi-GPU training.
-```console
+```bash
 accelerate --num_processes <ngpus> train.py --config-name=train_diffusion_unet_timm_umi_workspace task.dataset_path=cup_in_the_wild.zarr.zip
 ```
 
@@ -194,17 +218,17 @@ Our in-the-wild cup arragement policy is trained with the distribution of ["espr
 <img width="90%" src="assets/umi_cup.gif">
 
 Download pre-trained checkpoint.
-```console
+```bash
 wget https://real.stanford.edu/umi/data/pretrained_models/cup_wild_vit_l_1img.ckpt
 ```
 
 Grant permission to the HDMI capture card.
-```console
+```bash
 sudo chmod -R 777 /dev/bus/usb
 ```
 
 Launch eval script.
-```console
+```bash
 python eval_real.py --robot_config=example/eval_robots_config.yaml -i cup_wild_vit_l.ckpt -o data/eval_cup_wild_example
 ```
 After the script started, use your spacemouse to control the robot and the gripper (spacemouse buttons). Press `C` to start the policy. Press `S` to stop.
