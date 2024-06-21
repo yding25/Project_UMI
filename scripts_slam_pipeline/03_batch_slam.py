@@ -1,11 +1,11 @@
 """
-python scripts_slam_pipeline/03_batch_slam.py -i data_workspace/fold_cloth_20231214/demos
+python /home/yan/Project_UMI/scripts_slam_pipeline/03_batch_slam.py --input_dir /home/yan/Project_UMI/example_demo_session/demos --map_path /home/yan/Project_UMI/example_demo_session/demos/mapping/map_atlas.osa
 """
 # %%
 import sys
 import os
 
-ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
+ROOT_DIR = '/home/yan/Project_UMI'
 sys.path.append(ROOT_DIR)
 os.chdir(ROOT_DIR)
 
@@ -54,7 +54,7 @@ def main(input_dir, map_path, docker_image, num_workers, max_lost_frames, timeou
         map_path = input_dir.joinpath('mapping', 'map_atlas.osa')
     else:
         map_path = pathlib.Path(os.path.expanduser(map_path)).absolute()
-    assert map_path.is_file()
+    assert map_path.is_file(), f"Map file not found: {map_path}"
 
     if num_workers is None:
         num_workers = multiprocessing.cpu_count() // 2

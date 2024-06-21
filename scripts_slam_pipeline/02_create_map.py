@@ -1,12 +1,12 @@
 """
-python scripts_slam_pipeline/00_process_videos.py -i data_workspace/toss_objects/20231113/mapping
+python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/02_create_map.py --input_dir /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping --map_path /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping/map_atlas.osa
 """
 
 # %%
 import sys
 import os
 
-ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
+ROOT_DIR = '/home/{}/Project_UMI'.format(os.getenv('USER'))
 sys.path.append(ROOT_DIR)
 os.chdir(ROOT_DIR)
 
@@ -14,9 +14,6 @@ os.chdir(ROOT_DIR)
 import pathlib
 import click
 import subprocess
-import multiprocessing
-import concurrent.futures
-from tqdm import tqdm
 import numpy as np
 import cv2
 from umi.common.cv_util import draw_predefined_mask
@@ -29,14 +26,14 @@ from umi.common.cv_util import draw_predefined_mask
 @click.option('-np', '--no_docker_pull', is_flag=True, default=False, help="pull docker image from docker hub")
 @click.option('-nm', '--no_mask', is_flag=True, default=False, help="Whether to mask out gripper and mirrors. Set if map is created with bare GoPro no on gripper.")
 def main(input_dir, map_path, docker_image, no_docker_pull, no_mask):
-    video_dir = pathlib.Path(os.path.expanduser(input_dir)).absolute()
+    video_dir = pathlib.Path(input_dir).absolute()
     for fn in ['raw_video.mp4', 'imu_data.json']:
-        assert video_dir.joinpath(fn).is_file()
+        assert video_dir.joinpath(fn).is_file(), f"{fn} not found in {video_dir}"
 
     if map_path is None:
         map_path = video_dir.joinpath('map_atlas.osa')
     else:
-        map_path = pathlib.Path(os.path.expanduser(map_path)).absolute()
+        map_path = pathlib.Path(map_path).absolute()
     map_path.parent.mkdir(parents=True, exist_ok=True)
 
     # pull docker
@@ -98,7 +95,6 @@ def main(input_dir, map_path, docker_image, no_docker_pull, no_mask):
         stderr=stderr_path.open('w')
     )
     print(result)
-
 
 # %%
 if __name__ == "__main__":
