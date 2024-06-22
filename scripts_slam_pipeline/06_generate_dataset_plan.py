@@ -1,16 +1,11 @@
 """
 python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/06_generate_dataset_plan.py -i /home/$(whoami)/Project_UMI/example_demo_session
+
+脚本的主要功能是生成一个数据集计划 ,该计划包含从演示会话目录中提取的摄像头和夹持器的数据。
 """
 
-# %%
 import sys
 import os
-
-ROOT_DIR = '/home/{}/Project_UMI'.format(os.getenv('USER'))
-sys.path.append(ROOT_DIR)
-os.chdir(ROOT_DIR)
-
-# %%
 import pathlib
 import click
 import pickle
@@ -36,8 +31,15 @@ from umi.common.interpolation_util import (
     PoseInterpolator
 )
 
+'''
+设置根目录 ROOT_DIR 为 /home/{USER}/Project_UMI。
+将根目录添加到 Python 的路径中 ,并切换当前工作目录到根目录。
+'''
+ROOT_DIR = '/home/{}/Project_UMI'.format(os.getenv('USER'))
+sys.path.append(ROOT_DIR)
+os.chdir(ROOT_DIR)
 
-# %%
+
 def get_bool_segments(bool_seq):
     bool_seq = np.array(bool_seq, dtype=bool)
     segment_ends = (np.nonzero(np.diff(bool_seq))[0] + 1).tolist()
@@ -78,7 +80,16 @@ def get_x_projection(tx_tag_this, tx_tag_other):
     proj_other_right = np.sum(v_this_right * t_this_other, axis=-1)
     return proj_other_right
 
-# %%
+'''
+定义命令行参数
+input 项目目录, 包含所有数据文件。
+output 输出文件路径, 如果未指定 ,则默认为项目目录下的 dataset_plan.pkl 文件。
+tcp_offset 夹持器尖端到安装螺丝的距离。
+tx_slam_tag SLAM标签变换矩阵的JSON文件路径。
+nominal_z 夹持器手指标签的标称Z值。
+min_episode_length 最小的演示段长度。
+ignore_cameras 要忽略的摄像头序列号, 以逗号分隔。
+'''
 @click.command()
 @click.option('-i', '--input', required=True, help='Project directory')
 @click.option('-o', '--output', default=None)
@@ -87,16 +98,19 @@ def get_x_projection(tx_tag_this, tx_tag_other):
 @click.option('-nz', '--nominal_z', type=float, default=0.072, help="nominal Z value for gripper finger tag")
 @click.option('-ml', '--min_episode_length', type=int, default=24)
 @click.option('--ignore_cameras', type=str, default=None, help="comma separated string of camera serials to ignore")
-def main(input, output, tcp_offset, tx_slam_tag,
-         nominal_z, min_episode_length, ignore_cameras):
-    # %% stage 0
-    # gather inputs
+
+def main(input, output, tcp_offset, tx_slam_tag, nominal_z, min_episode_length, ignore_cameras):
+    '''
+    阶段 0: 收集输入数据
+    '''
     input_path = pathlib.Path(os.path.expanduser(input)).absolute()
     demos_dir = input_path.joinpath('demos')
     if output is None:
         output = input_path.joinpath('dataset_plan.pkl')
 
-    # tcp to camera transform
+    '''
+    定义相机到夹持器尖端的偏移量和变换矩阵。
+    '''
     # all unit in meters
     # y axis in camera frame
     cam_to_center_height = 0.086 # constant for UMI
@@ -118,7 +132,9 @@ def main(input, output, tcp_offset, tx_slam_tag,
     )
     tx_tag_slam = np.linalg.inv(tx_slam_tag)
 
-    # load gripper calibration
+    '''
+    加载并处理 SLAM 标签的变换矩阵。
+    '''
     gripper_id_gripper_cal_map = dict()
     cam_serial_gripper_cal_map = dict()
 
@@ -141,7 +157,9 @@ def main(input, output, tcp_offset, tx_slam_tag,
             cam_serial_gripper_cal_map[cam_serial] = gripper_cal_interp
 
     
-    # %% stage 1
+    '''阶段 1: 提取视频元数据
+    遍历 demos 目录中的视频文件, 提取元数据（如摄像头序列号、开始时间戳、帧数、帧率等）, 并将结果存储在 video_meta_df 中。
+    '''
     # loop over all demo directory to extract video metadata
     # output: video_meta_df
     
@@ -206,7 +224,10 @@ def main(input, output, tcp_offset, tx_slam_tag,
     video_meta_df = pd.DataFrame(data=rows)
 
 
-    # %% stage 2
+    '''
+    阶段 2: 匹配视频生成演示数据
+
+    '''
     # match videos into demos
     # output:
     # demo_data_list = {
@@ -278,7 +299,9 @@ def main(input, output, tcp_offset, tx_slam_tag,
     for vid_idx in unused_videos:
         print(f"Warning: video {video_meta_df.loc[vid_idx]['video_dir'].name} unused in any demo")
 
-    # %% stage 3
+    '''
+    阶段 3: 识别夹持器 ID
+    '''
     # identify gripper id (hardware) using aruco
     # output: 
     # add video_meta_df['gripper_hardware_id'] column
@@ -345,7 +368,9 @@ def main(input, output, tcp_offset, tx_slam_tag,
         gripper_id = counter.most_common()[0][0]
         cam_serial_gripper_hardware_id_map[cam_serial] = gripper_id 
         
-    # %% stage 4
+    '''
+    阶段 4: 区分夹持器左右
+    '''
     # disambiguiate gripper left/right
     # camera idx / robot idx convention:
     # from right (0) to left (1)
@@ -493,7 +518,10 @@ def main(input, output, tcp_offset, tx_slam_tag,
     print("Assigned camera_idx: right=0; left=1; non_gripper=2,3...")
     print(camera_serial_df)
     
-    # %% stage 6
+    '''
+    阶段 5: 生成数据集计划
+    根据视频片段生成数据集计划，包含每个演示的详细信息（例如时间戳、夹持器和摄像头数据）。
+    '''
     # generate dataset plan
     # output
     # all_plans = [{

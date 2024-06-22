@@ -60,7 +60,7 @@ By following these steps, you will have a setup ready for running the UMI-Flexiv
 
     - **Step3:** Prepare several demo videos (no need to rename these videos).
 
-3. **Optional: Download Example Data:**
+3. **(Optional) Download Example Data:**
 
     ```bash
     cd /home/$(whoami)/Project_UMI
@@ -77,65 +77,85 @@ By following these steps, you will have a setup ready for running the UMI-Flexiv
     python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/00_process_videos.py
     ```
 
-    <img src="docs/00_process_videos.png" width="500"/>
+    (Optional) Check the directory structure and contents.
+    ```bash
+    tree /home/$(whoami)/Project_UMI/example_demo_session
+    ```
 
 
-1. **Extract IMU Information:** 
-
-    Extract IMU information from the videos.
+1. **Extract IMU data from GoPro videos for further processing and analysis.** 
 
     ```bash
     python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/01_extract_gopro_imu.py
     ```
 
-    <img src="docs/01_extract_gopro_imu.png" width="500"/>
+    (Optional) Check the directory structure and contents.
+    ```bash
+    cat /home/$(whoami)/Project_UMI/example_demo_session/demos/'<folder name>'/imu_data.json
+    ```
 
-
-2. **Create Mapping Result:** 
+2. **Generate mapping results based on the processed IMU and video data** 
     Create the mapping result map_atlas.osa, which will be saved in the `/home/$(whoami)/Project_UMI/example_demo_session/demos/mapping` folder.
 
     ```bash
     python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/02_create_map.py --input_dir /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping --map_path /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping/map_atlas.osa
     ```
 
-    <img src="docs/02_create_map.png" width="200"/>
+    (Optional) Check the directory structure and contents (`map_atlas.osa`)
+    ```bash
+    tree /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping
+    ```
 
+    #### \# TODO: 如果夹爪不一样, 需要绘制夹爪的遮罩文件, 遮罩文件用于屏蔽特定区域,以提高地图构建和定位的准确性。
 
-3. **Create Mapping Result:** 
+3. **Perform batch SLAM using the extracted IMU data and generated maps** 
 
-- Step 3: create the mapping result: map_atlas.osa, which is saved at the folder named /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping
+    ```bash
+    python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/02_create_map.py --input_dir /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping --map_path /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping/map_atlas.osa
+    ```
 
-```bash
-python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/02_create_map.py --input_dir /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping --map_path /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping/map_atlas.osa
+    (Optional) Check the directory structure and contents.
+    ```bash
+    tree /home/$(whoami)/Project_UMI/example_demo_session/demos
+    ```
 
-```
+4. **Detect ArUco markers in video files and saves the detection results as pickle files** 
 
-<img src="docs/02_create_map.png" width="200"/>
+    ```bash
+    python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/04_detect_aruco.py \
+    -i /home/$(whoami)/Project_UMI/example_demo_session/demos \
+    -ci /home/$(whoami)/Project_UMI/example/calibration/gopro_intrinsics_2_7k.json \
+    -ac /home/$(whoami)/Project_UMI/example/calibration/aruco_config.yaml
+    ```
 
+    (Optional) Check the directory structure and contents.
+    ```bash
+    tree /home/$(whoami)/Project_UMI/example_demo_session/demos
+    ```
 
-- Step 4: create the mapping result: map_atlas.osa, which is saved at the folder named /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping
+5. **Excute SLAM tag and gripper range calibrations for a given session directory** 
 
-```bash
-python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/02_create_map.py --input_dir /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping --map_path /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping/map_atlas.osa
+    ```bash
+    python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/05_run_calibrations.py /home/$(whoami)/Project_UMI/example_demo_session
+    ```
 
-```
+    (Optional) Check the directory structure and contents.
+    ```bash
+    tree /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping
+    ```
 
-<img src="docs/03_batch_slam.png" width="250"/>
+6. **Generate a dataset plan by extracting and processing video and calibration data from a given project directory** 
 
+    ```bash
+    python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/06_generate_dataset_plan.py -i /home/$(whoami)/Project_UMI/example_demo_session
+    ```
 
-- Step 4: detect the aurco marker作用是处理指定目录下的每个视频文件，检测视频中的 ArUco 标签并将检测结果保存为 .pkl 文件。以下是该脚本的主要功能和作用的详细解释：
+    (Optional) Check the directory structure and contents (`dataset_plan.pkl`).
+    ```bash
+    tree /home/$(whoami)/Project_UMI/example_demo_session/
+    ```
 
-```bash
-python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/02_create_map.py --input_dir /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping --map_path /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping/map_atlas.osa
-
-```
-
-<img src="docs/04_detect_aruco.png" width="300"/>
-
-
-
-```
-...
+<!-- ```
 Found following cameras:
 camera_serial
 C3441328164125    5
@@ -147,18 +167,24 @@ camera_idx
 99% of raw data are used.
 defaultdict(<function main.<locals>.<lambda> at 0x7f471feb2310>, {})
 n_dropped_demos 0
-````
+```` -->
+<!-- 
+For this dataset, 99% of the data are useable (successful SLAM), with 0 demonstrations dropped. If your dataset has a low SLAM success rate, double check if you carefully followed our [data collection instruction](https://swanky-sphere-ad1.notion.site/UMI-Data-Collection-Instruction-4db1a1f0f2aa4a2e84d9742720428b4c).  -->
 
-For this dataset, 99% of the data are useable (successful SLAM), with 0 demonstrations dropped. If your dataset has a low SLAM success rate, double check if you carefully followed our [data collection instruction](https://swanky-sphere-ad1.notion.site/UMI-Data-Collection-Instruction-4db1a1f0f2aa4a2e84d9742720428b4c). 
+<!-- Despite our significant effort on robustness improvement, OBR_SLAM3 is still the most fragile part of UMI pipeline. If you are an expert in SLAM, please consider contributing to our fork of [OBR_SLAM3](https://github.com/cheng-chi/ORB_SLAM3) which is specifically optimized for UMI workflow. -->
 
-Despite our significant effort on robustness improvement, OBR_SLAM3 is still the most fragile part of UMI pipeline. If you are an expert in SLAM, please consider contributing to our fork of [OBR_SLAM3](https://github.com/cheng-chi/ORB_SLAM3) which is specifically optimized for UMI workflow.
+7. **Generate a replay buffer by processing video and calibration data from a given project directory, and saves the structured data in Zarr format for subsequent use** 
 
-Generate dataset for training.
-```bash
-python scripts_slam_pipeline/07_generate_replay_buffer.py -o example_demo_session/dataset.zarr.zip example_demo_session
-```
+    ```bash
+    python scripts_slam_pipeline/07_generate_replay_buffer.py -o example_demo_session/dataset.zarr.zip example_demo_session
+    ```
 
-## Training Diffusion Policy
+    (Optional) Check the directory structure and contents (`replay_buffer.zarr`).
+    ```bash
+    tree /home/$(whoami)/Project_UMI/example_demo_session
+    ```
+
+# 🧠 Training Diffusion Policy
 Single-GPU training. Tested to work on RTX3090 24GB.
 ```bash
 python train.py --config-name=train_diffusion_unet_timm_umi_workspace task.dataset_path=example_demo_session/dataset.zarr.zip

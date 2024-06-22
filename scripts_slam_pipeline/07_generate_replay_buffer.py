@@ -1,12 +1,5 @@
-# %%
 import sys
 import os
-
-ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
-sys.path.append(ROOT_DIR)
-os.chdir(ROOT_DIR)
-
-# %%
 import json
 import pathlib
 import click
@@ -31,8 +24,24 @@ from diffusion_policy.common.replay_buffer import ReplayBuffer
 from diffusion_policy.codecs.imagecodecs_numcodecs import register_codecs, JpegXl
 register_codecs()
 
+'''
+设置根目录 ROOT_DIR 为 /home/{USER}/Project_UMI。
+将根目录添加到 Python 的路径中，并切换当前工作目录到根目录。
+'''
+ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
+sys.path.append(ROOT_DIR)
+os.chdir(ROOT_DIR)
 
-# %%
+'''
+input: 项目目录，包含所有数据文件。
+output: 输出 Zarr 文件路径。
+out_res: 输出分辨率，默认 224,224。
+out_fov: 输出视场角。
+compression_level: 图像压缩级别，默认 99。
+no_mirror: 是否禁用镜子观察。
+mirror_swap: 是否启用镜像交换。
+num_workers: 并行处理的工作线程数。
+'''
 @click.command()
 @click.argument('input', nargs=-1)
 @click.option('-o', '--output', required=True, help='Zarr path')
@@ -42,8 +51,8 @@ register_codecs()
 @click.option('-nm', '--no_mirror', is_flag=True, default=False, help="Disable mirror observation by masking them out")
 @click.option('-ms', '--mirror_swap', is_flag=True, default=False)
 @click.option('-n', '--num_workers', type=int, default=None)
-def main(input, output, out_res, out_fov, compression_level, 
-         no_mirror, mirror_swap, num_workers):
+
+def main(input, output, out_res, out_fov, compression_level, no_mirror, mirror_swap, num_workers):
     if os.path.isfile(output):
         if click.confirm(f'Output file {output} exists! Overwrite?', abort=True):
             pass
@@ -53,7 +62,10 @@ def main(input, output, out_res, out_fov, compression_level,
     if num_workers is None:
         num_workers = multiprocessing.cpu_count()
     cv2.setNumThreads(1)
-            
+    
+    '''
+    设置鱼眼转换器, 如果指定了输出视场角，初始化鱼眼转换器。
+    '''
     fisheye_converter = None
     if out_fov is not None:
         intr_path = pathlib.Path(os.path.expanduser(ipath)).absolute().joinpath(
@@ -67,9 +79,16 @@ def main(input, output, out_res, out_fov, compression_level,
             out_fov=out_fov
         )
         
+    '''
+    创建空的重放缓冲区
+    '''
     out_replay_buffer = ReplayBuffer.create_empty_zarr(
         storage=zarr.MemoryStore())
     
+    '''
+    处理每个输入目录
+    遍历输入目录，读取数据集计划文件，处理每个演示，将数据添加到重放缓冲区，并生成视频处理任务列表。
+    '''
     # dump lowdim data to replay buffer
     # generate argumnet for videos
     n_grippers = None
@@ -149,7 +168,9 @@ def main(input, output, out_res, out_fov, compression_level,
     
     print(f"{len(all_videos)} videos used in total!")
     
-    # get image size
+    '''
+    获取输入视频尺寸
+    '''
     with av.open(vid_args[0][0]) as container:
         in_stream = container.streams.video[0]
         ih, iw = in_stream.height, in_stream.width

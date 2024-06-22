@@ -1,5 +1,7 @@
 """
 python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/00_process_videos.py
+
+脚本的主要功能是对视频文件进行处理和组织，确保视频文件按照特定的结构存储并且创建相应的符号链接。
 """
 
 import sys
@@ -19,15 +21,20 @@ os.chdir(ROOT_DIR)
 
 def main():
     '''
-    session_dir 定义了会话目录的路径
+    session_dir 定义了会话目录的路径, 该项目默认为example_demo_session
     '''
     session_dir = pathlib.Path("/home/{}/Project_UMI/example_demo_session".format(os.getenv('USER')))
     session = session_dir.absolute()
-    # hardcode subdirs
+    
+    '''
+    输入目录: raw_videos; 输出目录: demos
+    '''
     input_dir = session.joinpath("raw_videos")
     output_dir = session.joinpath("demos")
 
-    # create raw_videos if don't exist
+    '''
+    创建 raw_videos 目录并移动所有的 .mp4 视频文件到该目录
+    '''
     if not input_dir.is_dir():
         input_dir.mkdir()
         print(
@@ -39,21 +46,24 @@ def main():
             out_path = input_dir.joinpath(mp4_path.name)
             shutil.move(mp4_path, out_path)
 
-    # create mapping video if don't exist
+    '''
+    查找并处理 mapping.mp4 文件
+    '''
     mapping_vid_path = None
     for ext in ["MP4", "mp4"]:
         potential_path = input_dir.joinpath(f"mapping.{ext}")
         if potential_path.exists():
             mapping_vid_path = potential_path
             break
-    # test
     print(f"mapping_vid_path: {mapping_vid_path}") 
     if not mapping_vid_path:
         raise FileNotFoundError(
             "mapping.mp4 not found! Please specify which mp4 file is the mapping video."
         )
 
-    # create gripper calibration video if don't exist
+    '''
+    查找并处理 gripper_calibration.mp4 文件
+    '''
     gripper_cal_dir = input_dir.joinpath("gripper_calibration")
     gripper_cal_vid_path = None
     for ext in ["MP4", "mp4"]:
@@ -66,7 +76,6 @@ def main():
         print(
             "raw_videos/gripper_calibration doesn't exist! Creating one with the gripper calibration video."
         )
-
         if not gripper_cal_vid_path:
             raise FileNotFoundError(
                 "gripper_calibration.mp4 not found! Please specify which mp4 file is the gripper calibration video."
@@ -78,12 +87,17 @@ def main():
                 f"Moved {gripper_cal_vid_path.name} to gripper_calibration directory."
             )
 
-    # look for mp4 video in all subdirectories in input_dir
+    '''
+    查找所有的 .mp4 文件
+    '''
     input_mp4_paths = list(input_dir.glob("**/*.MP4")) + list(
         input_dir.glob("**/*.mp4")
     )
     print(f"Found {len(input_mp4_paths)} MP4 videos")
 
+    '''
+    使用 ExifTool 获取视频的元数据并处理视频文件
+    '''
     with ExifToolHelper() as et:
         for mp4_path in input_mp4_paths:
             if mp4_path.is_symlink():
@@ -131,6 +145,5 @@ def main():
             symlink_path = os.path.join(dots, rel_path)
             mp4_path.symlink_to(symlink_path)
 
-# %%
 if __name__ == "__main__":
     main()

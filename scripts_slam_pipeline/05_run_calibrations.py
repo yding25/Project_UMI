@@ -1,24 +1,35 @@
 """
 python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/05_run_calibrations.py /home/$(whoami)/Project_UMI/example_demo_session
+
+脚本的主要功能是运行一系列的校准任务，包括 SLAM 标签校准和夹持器范围校准。
 """
 
-# %%
 import sys
 import os
-
-ROOT_DIR = '/home/{}/Project_UMI'.format(os.getenv('USER'))
-sys.path.append(ROOT_DIR)
-os.chdir(ROOT_DIR)
-
-# %%
 import pathlib
 import click
 import subprocess
 
-# %%
+'''
+设置根目录 ROOT_DIR 为 /home/{USER}/Project_UMI。
+将根目录添加到 Python 的路径中，并切换当前工作目录到根目录。
+'''
+ROOT_DIR = '/home/{}/Project_UMI'.format(os.getenv('USER'))
+sys.path.append(ROOT_DIR)
+os.chdir(ROOT_DIR)
+
+'''
+定义命令行参数
+使用 click 库定义命令行参数
+session_dir 会话目录, 这个项目默认是example_demo_session
+'''
 @click.command()
 @click.argument('session_dir', nargs=-1)
+
 def main(session_dir):
+    '''
+    脚本目录路径
+    '''
     script_dir = pathlib.Path(__file__).parent.parent.joinpath('scripts')
     
     for session in session_dir:
@@ -27,7 +38,9 @@ def main(session_dir):
         mapping_dir = demos_dir.joinpath('mapping')
         slam_tag_path = mapping_dir.joinpath('tx_slam_tag.json')
             
-        # run slam tag calibration
+        '''
+        运行 SLAM 标签校准
+        '''
         script_path = script_dir.joinpath('calibrate_slam_tag.py')
         assert script_path.is_file()
         tag_path = mapping_dir.joinpath('tag_detection.pkl')
@@ -47,7 +60,9 @@ def main(session_dir):
         ]
         subprocess.run(cmd)
         
-        # run gripper range calibration
+        '''
+        运行夹持器范围校准
+        '''
         script_path = script_dir.joinpath('calibrate_gripper_range.py')
         assert script_path.is_file()
         
@@ -62,7 +77,6 @@ def main(session_dir):
             ]
             subprocess.run(cmd)
 
-            
-# %%
+
 if __name__ == "__main__":
     main()
