@@ -111,7 +111,7 @@ By following these steps, you will have a setup ready for running the UMI-Flexiv
 3. **Perform batch SLAM using the extracted IMU data and generated maps** 
 
     ```bash
-    python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/02_create_map.py --input_dir /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping --map_path /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping/map_atlas.osa
+    python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/03_batch_slam.py --input_dir /home/$(whoami)/Project_UMI/example_demo_session/demos --map_path /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping/map_atlas.osa
     ```
 
     (Optional) Check the directory structure and contents.
@@ -174,6 +174,19 @@ For this dataset, 99% of the data are useable (successful SLAM), with 0 demonstr
 <!-- Despite our significant effort on robustness improvement, OBR_SLAM3 is still the most fragile part of UMI pipeline. If you are an expert in SLAM, please consider contributing to our fork of [OBR_SLAM3](https://github.com/cheng-chi/ORB_SLAM3) which is specifically optimized for UMI workflow. -->
 
 7. **Generate a replay buffer by processing video and calibration data from a given project directory, and saves the structured data in Zarr format for subsequent use** 
+
+    ```bash
+    python scripts_slam_pipeline/07_generate_replay_buffer.py -o example_demo_session/dataset.zarr.zip example_demo_session
+    ```
+
+    (Optional) Check the directory structure and contents (`replay_buffer.zarr`).
+    ```bash
+    tree /home/$(whoami)/Project_UMI/example_demo_session
+    ```
+
+# 📏 Measure SLAM Error 
+
+1. **Generate a replay buffer by processing video and calibration data from a given project directory, and saves the structured data in Zarr format for subsequent use** 
 
     ```bash
     python scripts_slam_pipeline/07_generate_replay_buffer.py -o example_demo_session/dataset.zarr.zip example_demo_session
