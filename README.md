@@ -107,6 +107,9 @@ By following these steps, you will have a setup ready for running the UMI-Flexiv
     ```
 
     #### \# TODO: 如果夹爪不一样, 需要绘制夹爪的遮罩文件, 遮罩文件用于屏蔽特定区域,以提高地图构建和定位的准确性。
+    ```bash
+    python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/02_create_map.py --input_dir /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping --map_path /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping/map_atlas.osa --no_mask
+    ```
 
 3. **Perform batch SLAM using the extracted IMU data and generated maps** 
 
