@@ -205,6 +205,7 @@ python /home/$(whoami)/Project_UMI/run_slam_pipeline.py
     ```bash
     python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/08_2_measure_slam_error.py
     ```
+    <img src="docs/RMSE.png" alt="误差" width="500">
 
 <!-- # 🧠 Training Diffusion Policy
 Single-GPU training. Tested to work on RTX3090 24GB.
