@@ -184,7 +184,7 @@ For this dataset, 99% of the data are useable (successful SLAM), with 0 demonstr
     tree /home/$(whoami)/Project_UMI/example_demo_session
     ```
 
-# 🧠 Training Diffusion Policy
+<!-- # 🧠 Training Diffusion Policy
 Single-GPU training. Tested to work on RTX3090 24GB.
 ```bash
 python train.py --config-name=train_diffusion_unet_timm_umi_workspace task.dataset_path=example_demo_session/dataset.zarr.zip
@@ -270,4 +270,4 @@ This repository is released under the MIT license. See [LICENSE](LICENSE) for ad
 * Our GoPro SLAM pipeline is adapted from [Steffen Urban](https://github.com/urbste)'s [fork](https://github.com/urbste/ORB_SLAM3) of [OBR_SLAM3](https://github.com/UZ-SLAMLab/ORB_SLAM3).
 * We used [Steffen Urban](https://github.com/urbste)'s [OpenImuCameraCalibrator](https://github.com/urbste/OpenImuCameraCalibrator/) for camera and IMU calibration.
 * The UMI gripper's core mechanism is adpated from [Push/Pull Gripper](https://www.thingiverse.com/thing:2204113) by [John Mulac](https://www.thingiverse.com/3dprintingworld/designs).
-* UMI's soft finger is adapted from [Alex Alspach](http://alexalspach.com/)'s original design at TRI.
+* UMI's soft finger is adapted from [Alex Alspach](http://alexalspach.com/)'s original design at TRI. -->
