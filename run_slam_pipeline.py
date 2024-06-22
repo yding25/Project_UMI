@@ -4,11 +4,14 @@ import os
 
 def run_script(script_path, *args):
     cmd = ["python", script_path] + list(args)
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    result = subprocess.run(cmd, text=True, capture_output=True)
+
+    print(f"Running {script_path} with arguments: {' '.join(args)}")
     if result.returncode != 0:
         print(f"Error running {script_path}: {result.stderr}")
     else:
         print(f"Successfully ran {script_path}")
+        print(result.stdout)
 
 
 def main():

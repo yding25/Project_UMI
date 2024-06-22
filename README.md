@@ -179,7 +179,7 @@ For this dataset, 99% of the data are useable (successful SLAM), with 0 demonstr
 7. **Generate a replay buffer by processing video and calibration data from a given project directory, and saves the structured data in Zarr format for subsequent use** 
 
     ```bash
-    python scripts_slam_pipeline/07_generate_replay_buffer.py -o example_demo_session/dataset.zarr.zip example_demo_session
+    python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/07_generate_replay_buffer.py -o example_demo_session/dataset.zarr.zip example_demo_session
     ```
 
     (Optional) Check the directory structure and contents (`replay_buffer.zarr`).
@@ -193,18 +193,17 @@ python /home/$(whoami)/Project_UMI/run_slam_pipeline.py
 ```
 
 
-
 # 📏 Measure SLAM Error 
-
-1. **Generate a replay buffer by processing video and calibration data from a given project directory, and saves the structured data in Zarr format for subsequent use** 
+    
+1. **Visualize trajectories** 
 
     ```bash
-    python scripts_slam_pipeline/07_generate_replay_buffer.py -o example_demo_session/dataset.zarr.zip example_demo_session
+    python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/08_1_visualize_trajectory.py
     ```
 
-    (Optional) Check the directory structure and contents (`replay_buffer.zarr`).
+2. **Compute SLAM and ground truth Trajectories with different time gap** 
     ```bash
-    tree /home/$(whoami)/Project_UMI/example_demo_session
+    python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/08_2_measure_slam_error.py
     ```
 
 <!-- # 🧠 Training Diffusion Policy
