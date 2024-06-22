@@ -67,7 +67,7 @@ By following these steps, you will have a setup ready for running the UMI-Flexiv
     wget --recursive --no-parent --no-host-directories --cut-dirs=2 --relative --reject="index.html*" --no-check-certificate https://real.stanford.edu/umi/data/example_demo_session/
     ```
 
-## Running the Pipeline
+## Running the Pipeline (one by one)
 
 0. **Process Raw Videos:** 
 
@@ -186,6 +186,13 @@ For this dataset, 99% of the data are useable (successful SLAM), with 0 demonstr
     ```bash
     tree /home/$(whoami)/Project_UMI/example_demo_session
     ```
+
+## Running the Pipeline (all)
+```bash
+python /home/$(whoami)/Project_UMI/run_slam_pipeline.py
+```
+
+
 
 # 📏 Measure SLAM Error 
 
