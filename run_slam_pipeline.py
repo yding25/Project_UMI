@@ -50,9 +50,9 @@ def main():
                 "-i",
                 f"{example_session_dir}/demos",
                 "-ci",
-                f"{example_session_dir}/example/calibration/gopro_intrinsics_2_7k.json",
+                f"example/calibration/gopro_intrinsics_2_7k.json",
                 "-ac",
-                f"{example_session_dir}/example/calibration/aruco_config.yaml",
+                f"example/calibration/aruco_config.yaml",
             )
         elif script == "05_run_calibrations.py":
             run_script(script_path, example_session_dir)
