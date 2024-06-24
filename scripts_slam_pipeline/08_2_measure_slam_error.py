@@ -1,17 +1,17 @@
 """
-python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/08_measure_slam_error.py
+python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/08_2_measure_slam_error.py
 
 脚本的功能有:
 1, 展示和绘制SLAM算出来的trajectory文件, 比如
 - /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping/mapping_camera_trajectory.csv
 - /home/$(whoami)/Project_UMI/example_demo_session/demos/mapping/camera_trajectory.csv
-- /home/$(whoami)/Project_UMI/example_demo_session/demos/demo_C3441328010998_2024.06.20_15.32.21.852633/camera_trajectory.csv
+- /home/$(whoami)/Project_UMI/example_demo_session/demos/demo_C3441328010998_2024.06.24_20.30.00.359967/camera_trajectory.csv
 - /home/$(whoami)/Project_UMI/example_demo_session/demos/demo_C3441328010998_2024.06.20_15.33.06.981050/camera_trajectory.csv
-- /home/$(whoami)/Project_UMI/example_demo_session/demos/demo_C3441328010998_2024.06.20_15.34.27.911900/camera_trajectory.csv
+- /home/$(whoami)/Project_UMI/example_demo_session/demos/demo_C3441328010998_2024.06.24_20.30.00.359967/camera_trajectory.csv
 - ...
 
 2, 展示和绘制ground truth的trajectory文件, 比如
-- /home/$(whoami)/Project_UMI/example_demo_session/GT_GX011068.pkl
+- /home/$(whoami)/Project_UMI/example_demo_session/GT_GX011121.pkl
 - /home/$(whoami)/Project_UMI/example_demo_session/GT_GX011069.pkl
 - /home/$(whoami)/Project_UMI/example_demo_session/GT_GX011070.pkl
 - ...
@@ -26,6 +26,7 @@ import pickle
 import matplotlib.pyplot as plt
 from scipy.spatial.transform import Rotation as R
 from scipy.interpolate import interp1d
+from datetime import datetime
 
 
 # 定义读取和处理CSV文件的函数
@@ -39,7 +40,6 @@ def read_and_process_csv(file_path, slam_start_time, delta):
     df["z"] = pd.to_numeric(df["z"])
     return df
 
-
 # 定义读取和处理PKL文件的函数
 def read_and_process_pkl(file_path):
     with open(file_path, "rb") as f:
@@ -52,7 +52,11 @@ def read_and_process_pkl(file_path):
     z_values = []
 
     for record in data:
-        timestamps.append(record["timestemp"])
+        # 将浮点数时间戳转换为纳秒格式的整数
+        time_str = str(record["timestemp"])
+        dt = datetime.strptime(time_str, "%y%m%d%H%M%S.%f")
+        timestamps.append(int(dt.timestamp() * 1e9))
+        
         flange_pose = record["flangePose"]
         x_values.append(flange_pose[0])
         y_values.append(flange_pose[1])
@@ -62,7 +66,6 @@ def read_and_process_pkl(file_path):
         {"timestamp": timestamps, "x": x_values, "y": y_values, "z": z_values}
     )
     return df
-
 
 # 计算最优的转换矩阵
 def compute_transformation_matrix(A, B):
@@ -90,13 +93,16 @@ def compute_transformation_matrix(A, B):
 
 # 获取当前用户名并构建文件路径
 user = os.getenv("USER")
-slam_file_path = f"/home/{user}/Project_UMI/example_demo_session/demos/demo_C3441328010998_2024.06.20_15.32.21.852633/camera_trajectory.csv"
+slam_file_path = f"/home/{user}/Project_UMI/example_demo_session/demos/demo_C3441328010998_2024.06.24_20.30.00.359967/camera_trajectory.csv"
 ground_truth_file_path = (
-    f"/home/{user}/Project_UMI/example_demo_session/GT_GX011068.pkl"
+    f"/home/{user}/Project_UMI/example_demo_session/GT_GX011121.pkl"
 )
 
 # 设置SLAM的起始时间戳（占位符变量）
-slam_start_time = 1718868741667852978  # 请根据实际需要输入
+time_str = "240624203001.414"
+dt = datetime.strptime(time_str, "%y%m%d%H%M%S.%f")
+slam_start_time = int(dt.timestamp() * 1e9) # 1718868741667852978
+print(f'slam_start_time:{slam_start_time}')
 
 # 读取和处理Ground Truth文件
 ground_truth_df = read_and_process_pkl(ground_truth_file_path)
@@ -106,7 +112,7 @@ pd.set_option("display.float_format", "{:.0f}".format)
 pd.options.display.float_format = lambda x: f"{x:.3f}"
 
 # 定义delta的范围
-delta_values = np.linspace(-5, 5, 50)  # 例如，范围从-1到1，共50个点
+delta_values = np.linspace(-1.1, 1.1, 100)  # 例如，范围从-1到1，共50个点
 
 rmse_values = []
 

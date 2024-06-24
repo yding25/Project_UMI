@@ -1,5 +1,5 @@
 """
-python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/08_measure_slam_error.py
+python /home/$(whoami)/Project_UMI/scripts_slam_pipeline/08_1_visualize_trajectory.py
 
 脚本的功能有:
 1, 展示和绘制SLAM算出来的trajectory文件, 比如
@@ -44,7 +44,7 @@ def read_and_process_pkl(file_path):
 
     # 打印PKL文件内容
     print(f"Contents of {file_path}:")
-    if "GT_GX011068" in file_path:
+    if "GT_GX011098" in file_path:
         for record in data:
             print(record)
 
@@ -75,9 +75,9 @@ user = os.getenv("USER")
 csv_file_paths = [
     f"/home/{user}/Project_UMI/example_demo_session/demos/mapping/mapping_camera_trajectory.csv",
     f"/home/{user}/Project_UMI/example_demo_session/demos/mapping/camera_trajectory.csv",
-    f"/home/{user}/Project_UMI/example_demo_session/demos/demo_C3441328010998_2024.06.20_15.32.21.852633/camera_trajectory.csv",
-    f"/home/{user}/Project_UMI/example_demo_session/demos/demo_C3441328010998_2024.06.20_15.33.06.981050/camera_trajectory.csv",
-    f"/home/{user}/Project_UMI/example_demo_session/demos/demo_C3441328010998_2024.06.20_15.34.27.911900/camera_trajectory.csv",
+    f"/home/{user}/Project_UMI/example_demo_session/demos/demo_C3441328010998_2024.06.24_13.18.16.365183/camera_trajectory.csv",
+    # f"/home/{user}/Project_UMI/example_demo_session/demos/demo_C3441328010998_2024.06.24_13.20.57.342667/camera_trajectory.csv",
+    # f"/home/{user}/Project_UMI/example_demo_session/demos/demo_C3441328010998_2024.06.24_13.21.38.133417/camera_trajectory.csv",
 ]
 global_init_time = 0.0  # 根据需要调整
 
@@ -101,9 +101,9 @@ fig_csv.suptitle("Trajectories from SLAM (CSV)")
 csv_titles = [
     "mapping_camera_trajectory.csv",
     "camera_trajectory.csv",
-    "GX011068/camera_trajectory.csv",
-    "GX011069/camera_trajectory.csv",
-    "GX011070/camera_trajectory.csv",
+    "GX011098/camera_trajectory.csv",
+    "GX011100/camera_trajectory.csv",
+    "GX011101/camera_trajectory.csv",
 ]
 
 for i, (df, title) in enumerate(zip(csv_dataframes, csv_titles)):
@@ -145,9 +145,9 @@ for i in range(len(csv_dataframes), 6):
 
 # Ground Truth Trajectories (PKL)
 pkl_file_paths = [
-    f"/home/{user}/Project_UMI/example_demo_session/GT_GX011068.pkl",
-    f"/home/{user}/Project_UMI/example_demo_session/GT_GX011069.pkl",
-    f"/home/{user}/Project_UMI/example_demo_session/GT_GX011070.pkl",
+    f"/home/{user}/Project_UMI/example_demo_session/GT_GX011098.pkl",
+    # f"/home/{user}/Project_UMI/example_demo_session/GT_GX011100.pkl",
+    # f"/home/{user}/Project_UMI/example_demo_session/GT_GX011101.pkl",
 ]
 
 # 读取和处理PKL文件
@@ -179,7 +179,8 @@ fig_pkl, axs_pkl = plt.subplots(2, 3, subplot_kw={"projection": "3d"})
 fig_pkl.suptitle("Ground Truth Trajectories (PKL)")
 
 # 绘制每个PKL文件的3D图
-gt_titles = ["GT_GX011068.pkl", "GT_GX011069.pkl", "GT_GX011070.pkl"]
+# gt_titles = ["GT_GX011068.pkl", "GT_GX011069.pkl", "GT_GX011070.pkl"]
+gt_titles = ["GT_GX011098.pkl"]
 
 for i, (df, title) in enumerate(zip(gt_dataframes, gt_titles)):
     row = i // 3
